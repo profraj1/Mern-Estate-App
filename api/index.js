@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRouter from "./routes/user.routes.js";
 import authRouter from "./routes/auth.routes.js";
+import { defaultErrorHandler } from "./utils/error.handler.js";
 dotenv.config();
 
 mongoose
@@ -24,3 +25,5 @@ app.listen(3000, () => {
 
 app.use("/api/user", userRouter);
 app.use("/api/auth/", authRouter)
+
+app.use(defaultErrorHandler);
