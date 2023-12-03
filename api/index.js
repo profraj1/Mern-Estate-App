@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import userRouter from "./routes/user.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import { defaultErrorHandler } from "./utils/error.handler.js";
+import bodyParser from "body-parser";
 dotenv.config();
 
 mongoose
@@ -16,7 +17,8 @@ mongoose
   });
 
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.listen(3000, () => {
   console.log("Server is running at Port 3000");
@@ -24,6 +26,6 @@ app.listen(3000, () => {
 
 
 app.use("/api/user", userRouter);
-app.use("/api/auth/", authRouter)
+app.use("/api/auth/", authRouter);
 
 app.use(defaultErrorHandler);

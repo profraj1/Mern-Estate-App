@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import SweetAlert from "sweetalert2";
+import { FaEye } from "react-icons/fa";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  const spanOnClick = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleInputChange = (e) => {
     setFormData({
@@ -19,14 +26,29 @@ const SignUp = () => {
     try {
       setLoading(true);
       const response = await axios.post("/api/auth/signup", formData);
-      alert(response.data);
+      SweetAlert.fire({
+        text: response.data,
+        icon: "success",
+        confirmButtonText: "OK",
+        confirmButtonColor: "blue",
+      });
       navigate("/sign-in");
     } catch (err) {
       setLoading(false);
       if (err.response) {
-        alert(err.response.data.message);
+        SweetAlert.fire({
+          text: err.response.data.message,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "blue",
+        });
       } else {
-        alert("An unexpected error occurred!!!");
+        SweetAlert.fire({
+          text: "An unexpected error occurred!!!",
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "blue",
+        });
       }
     }
     setLoading(false);
@@ -34,15 +56,23 @@ const SignUp = () => {
 
   return (
     <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7 text-blue-700">
+      <h1 className="text-3xl text-center font-semibold my-2 text-blue-700">
         Sign Up
       </h1>
-      <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
+      <form className="flex flex-col gap-2" onSubmit={handleFormSubmit}>
         <input
           required
           type="text"
-          placeholder="Username"
-          id="username"
+          placeholder="First Name"
+          id="firstName"
+          className="p-3 border rounded-lg"
+          onChange={handleInputChange}
+        />
+        <input
+          required
+          type="text"
+          placeholder="Last Name"
+          id="lastName"
           className="p-3 border rounded-lg"
           onChange={handleInputChange}
         />
@@ -56,9 +86,24 @@ const SignUp = () => {
         />
         <input
           required
-          type="password"
+          type={!showPassword ? "text" : "password"}
           placeholder="Password"
           id="password"
+          className="p-3 border rounded-lg"
+          onChange={handleInputChange}
+        />
+        <span
+          className="cursor-pointer text-blue-500 text-xs text-right"
+          onClick={spanOnClick}
+        >
+          {!showPassword ? "Show Password" : "Hide Password"}
+        </span>
+
+        <input
+          required
+          type="text"
+          placeholder="Mobile Number"
+          id="mobileNumber"
           className="p-3 border rounded-lg"
           onChange={handleInputChange}
         />
@@ -72,7 +117,7 @@ const SignUp = () => {
           Continue with Google
         </button>
       </form>
-      <div className="flex gap-3 mt-5">
+      <div className="flex gap-2 mt-5">
         <p>Already have an Account?</p>
         <Link to="/sign-in" className="text-blue-600">
           Sign In
