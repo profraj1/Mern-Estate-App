@@ -2,10 +2,18 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SweetAlert from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
+  const {currentUser} = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
     setFormData({
@@ -17,15 +25,20 @@ const SignIn = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
+      dispatch(signInStart());
       const response = await axios.post("/api/auth/signin", formData);
-      SweetAlert.fire({
-        text: "Logged in Successfully",
-        icon: "success",
-        confirmButtonText: "OK",
-        confirmButtonColor: "blue",
-      });
-      navigate("/profile");
+      if (response) {
+        dispatch(signInSuccess(response.data));
+        SweetAlert.fire({
+          text: "Logged in Successfully",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "blue",
+        });
+        navigate("/profile");
+      }
     } catch (err) {
+      dispatch(signInFailure(err.response.data));
       if (err.response) {
         SweetAlert.fire({
           text: err.response.data.message,
@@ -74,7 +87,7 @@ const SignIn = () => {
         </button>
       </form>
       <div className="flex gap-2 mt-5">
-        <p>Don't Have an Account?</p>
+        <p>Dont Have an Account?</p>
         <Link to="/sign-up" className="text-blue-600">
           Sign Up
         </Link>

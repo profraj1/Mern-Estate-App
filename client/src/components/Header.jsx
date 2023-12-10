@@ -1,6 +1,7 @@
 import React from "react";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { CgProfile } from "react-icons/cg";
 
 const Header = () => {
   return (
@@ -33,6 +34,10 @@ const Header = () => {
           </Link>
           <Link to="/sign-in">
             <li className="text-slate-300 hover:underline">SignIn</li>
+          </Link>
+
+          <Link to="/profile">
+            <CgProfile className="text-2xl text-slate-300" />
           </Link>
         </ul>
       </div>
